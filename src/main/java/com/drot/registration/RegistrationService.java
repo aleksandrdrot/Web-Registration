@@ -8,43 +8,31 @@ import org.springframework.stereotype.Service;
 public class RegistrationService {
 
     public static boolean input(String login, String password, String confirmPassword) {
-        boolean log = true;
-        String okPass = "ok";
-        if (login.equals(checkLogin(login))) {
-            log = true;
-        } else {
-            log = false;
-        }
 
-        if (okPass.equals(comparePass(password, confirmPassword))) {
-            log = true;
-        } else {
-            log = false;
-        }
-        return log;
+        return checkLogin(login) && comparePass(password, confirmPassword);
     }
 
     //-------------------------------------------------------------//
     //  Проверяем логин на длинну и символы                        //
     //-------------------------------------------------------------//
-    public static String checkLogin(String str) {
-        if (checkSymbol(str) == null || checkLengthLogin(str) == null) {
+    public static boolean checkLogin(String str) {
+        if (!checkSymbol(str) || !checkLengthLogin(str)) {
             throw new LogException();
         } else {
-            return str;
+            return true;
         }
     }
 
     //-------------------------------------------------------------//
     //  Проверяем пароли на сходство                               //
     //-------------------------------------------------------------//
-    public static String comparePass(String pass1, String pass2) {
-        String str1 = checkPass(pass1);
-        String str2 = checkPass(pass2);
-        if (!str1.equals(str2)) {
+    public static boolean comparePass(String pass1, String pass2) {
+        if (!checkPass(pass1) || !checkPass(pass2)) {
+            throw new PassException();
+        } else if (!pass1.equals(pass2)) {
             throw new PassException();
         } else {
-            return "ok";
+            return true;
         }
     }
 
@@ -52,35 +40,35 @@ public class RegistrationService {
     //-------------------------------------------------------------//
     //  Проверяем пароль на длинну и символы                       //
     //-------------------------------------------------------------//
-    public static String checkPass(String pass) {
-        if (checkSymbol(pass) == null || checkLengthPass(pass) == null) {
+    public static boolean checkPass(String pass) {
+        if (!checkSymbol(pass) || !checkLengthPass(pass)) {
             throw new PassException();
         } else {
-            return pass;
+            return true;
         }
     }
 
-    public static String checkSymbol(String str) {
+    public static boolean checkSymbol(String str) {
         if (str.matches("^[a-zA-Z0-9_]*$")) {
-            return str;
+            return true;
         } else {
-            return null;
+            return false;
         }
     }
 
-    public static String checkLengthLogin(String login) {
+    public static boolean checkLengthLogin(String login) {
         if (login.length() <= 20) {
-            return login;
+            return true;
         } else {
-            return null;
+            return false;
         }
     }
 
-    public static String checkLengthPass(String pass) {
+    public static boolean checkLengthPass(String pass) {
         if (pass.length() < 20) {
-            return pass;
+            return true;
         } else {
-            return null;
+            return false;
         }
     }
 
